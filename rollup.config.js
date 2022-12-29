@@ -3,7 +3,6 @@ import {nodeResolve} from "@rollup/plugin-node-resolve";
 import serve from "rollup-plugin-serve";
 import html from "@rollup/plugin-html";
 import livereload from "rollup-plugin-livereload";
-import nodePolyfills from "rollup-plugin-polyfill-node";
 import commonjs from "@rollup/plugin-commonjs";
 export default {
   input: "src/index.ts",
@@ -24,6 +23,5 @@ export default {
     typescript(),
     serve("dist"),
     livereload(),
-    nodePolyfills(/* options */),
   ],
 };

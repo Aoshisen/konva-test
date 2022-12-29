@@ -4,8 +4,7 @@
   "main": "src/index.ts",
   "license": "MIT",
   "scripts": {
-    "build": "rollup -c ",
-    "build-watch": "rollup -c -w"
+    "build": "rollup -c "
   },
   "type": "module",
   "dependencies": {
@@ -21,5 +20,7 @@
     "rollup-plugin-polyfill-node": "^0.11.0",
     "rollup-plugin-serve": "^2.0.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "canvas": "^2.9.3"
+  }
 }
