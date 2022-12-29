@@ -1,5 +1,5 @@
 import typescript from "@rollup/plugin-typescript";
-import {nodeResolve} from "@rollup/plugin-node-resolve";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 import serve from "rollup-plugin-serve";
 import html from "@rollup/plugin-html";
 import livereload from "rollup-plugin-livereload";
@@ -13,12 +13,9 @@ export default {
 
   plugins: [
     nodeResolve({
-      exportConditions:['default','module',"import"]
+      browser: true,
     }),
-    commonjs({
-      esmExternals:true,
-      include:/node_modules/
-    }),
+    commonjs(),
     html(),
     typescript(),
     serve("dist"),
