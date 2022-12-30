@@ -21,8 +21,8 @@ class SketchText {
   initStage() {
     this.stage = new Konva.Stage({
       container: this.containerNode,
-      width: 500,
       height: 500,
+      width:600
     });
   }
 
