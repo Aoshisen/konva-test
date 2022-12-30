@@ -4,6 +4,7 @@ import serve from "rollup-plugin-serve";
 import html from "@rollup/plugin-html";
 import livereload from "rollup-plugin-livereload";
 import commonjs from "@rollup/plugin-commonjs";
+import css from "rollup-plugin-import-css";
 export default {
   input: "src/index.ts",
   output: {
@@ -16,6 +17,7 @@ export default {
       browser: true,
     }),
     commonjs(),
+    css(),
     html(),
     typescript(),
     serve("dist"),
