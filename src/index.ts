@@ -1,83 +1,54 @@
-import Konva from "konva";
-import "./index.css";
+import { fabric } from "fabric";
+import { ITextboxOptions } from "fabric/fabric-impl";
 
-function addContainer() {
-  document.body.innerHTML = `<div id="app"></div>`;
+const canvas = new fabric.Canvas("canvas");
+
+window.text = null;
+
+canvas.setDimensions({
+  width: 800,
+  height: 800,
+});
+
+canvas.setBackgroundColor("#565656", () => {
+  canvas.renderAll();
+});
+
+export function addText() {
+  const text = new fabric.Text("ownTextdfffffffffffffff", {
+    fill: "yellow",
+    hasControls: false,
+    hasBorders: false,
+    lockMovementX: true,
+    lockMovementY: true,
+  });
+  canvas.add(text);
+  const group = new fabric.Group([text], {
+    width: 200,
+    height: 200,
+    left: 200,
+    top: 200,
+  });
+  canvas.add(group);
+  canvas.setActiveObject(group);
+  window.text = group;
+  canvas.renderAll();
 }
 
-addContainer();
-
-class SketchText {
-  public stage: any;
-  public layer: any;
-  public textNode: any;
-  public transformer: any;
-  public containerNode;
-  constructor(containerNode: any) {
-    this.containerNode = containerNode;
-
-    this.init();
-  }
-  initStage() {
-    this.stage = new Konva.Stage({
-      container: this.containerNode,
-      height: 500,
-      width:600
-    });
-  }
-
-  initTextNode() {
-    this.textNode = new Konva.Text({
-      text: "this is some text in here",
-      fontSize: 20,
-      x: 0,
-      y: 0,
-      draggable: true,
-    });
-  }
-
-  initTransformer() {
-    this.transformer = new Konva.Transformer({
-      node: this.textNode as any,
-      enabledAnchors: [
-        "middle-left",
-        "middle-right",
-        "top-center",
-        "bottom-center",
-      ],
-      boundBoxFunc: function (oldBox, newBox) {
-        newBox.width = Math.max(30, newBox.width);
-        return newBox;
-      },
-    });
-  }
-
-  initLayer() {
-    this.layer = new Konva.Layer();
-  }
-
-  init() {
-    this.initStage();
-    this.initLayer();
-    this.initTextNode();
-    this.initTransformer();
-    this.changeCursor();
-    this.layer.add(this.textNode);
-    this.layer.add(this.transformer);
-    this.stage.add(this.layer);
-    this.stage.draw();
-  }
-
-  changeCursor() {
-    this.textNode.on("mouseenter", () => {
-      this.stage.container().style.cursor = "move";
-    });
-    this.textNode.on("mouseleave", () => {
-      this.stage.container().style.cursor = "default";
-    });
-  }
+export function move() {
+  console.log("move");
+  (canvas.getActiveObject() as TextBox).setPosition(100, 200);
 }
 
-const sketchInstance = new SketchText("app");
+export function change() {
+  console.log("change");
+  (canvas.getActiveObject() as TextBox).setFontFamily("ass");
+}
 
-export { sketchInstance };
+let btn_add = document.querySelector("#text");
+let btn_move = document.querySelector("#move");
+let btn_change = document.querySelector("#change");
+
+btn_add?.addEventListener("click", addText);
+btn_move?.addEventListener("click", move);
+btn_change?.addEventListener("click", change);
