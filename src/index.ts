@@ -1,9 +1,6 @@
 import { fabric } from "fabric";
-import { ITextboxOptions } from "fabric/fabric-impl";
 
 const canvas = new fabric.Canvas("canvas");
-
-window.text = null;
 
 canvas.setDimensions({
   width: 800,
@@ -14,41 +11,83 @@ canvas.setBackgroundColor("#565656", () => {
   canvas.renderAll();
 });
 
+export class TextBox extends fabric.Group {
+  public _text: string;
+  public textNode: fabric.Text;
+  type = "TextBox";
+  constructor(text: string, options?: fabric.IGroupOptions) {
+    const textNode = new fabric.Text(text, {
+      fill: "yellow",
+      hasControls: false,
+      hasBorders: false,
+      lockMovementX: true,
+      lockMovementY: true,
+      selectable: false,
+    });
+    super([textNode], options);
+    this._text = text;
+    this.textNode = textNode;
+    this.textNode.setPositionByOrigin(
+      new fabric.Point(-(this.width || 0) / 2, 0),
+      "left",
+      "center"
+    );
+  }
+
+  get text() {
+    return this._text;
+  }
+
+  set text(text: string) {
+    this._text = text;
+    this.textNode.set("text", text);
+  }
+
+  public setTextOptions(options) {
+    this.textNode.setOptions(options);
+  }
+
+  public setText(text: string) {
+    this.textNode.set("text", text);
+    const groupWidth = this.width;
+    const textWidth = this.textNode.width;
+    if (groupWidth && textWidth) {
+      if (groupWidth < textWidth) {
+        this.textNode.setPositionByOrigin(
+          new fabric.Point(-groupWidth / 2, 0),
+          "left",
+          "center"
+        );
+        this.textNode.scaleToWidth(groupWidth);
+      }
+    }
+  }
+}
+
 export function addText() {
-  const text = new fabric.Text("ownTextdfffffffffffffff", {
-    fill: "yellow",
-    hasControls: false,
-    hasBorders: false,
-    lockMovementX: true,
-    lockMovementY: true,
-  });
-  canvas.add(text);
-  const group = new fabric.Group([text], {
+  console.log("addText");
+  const text = new TextBox("ass", {
     width: 200,
     height: 200,
     left: 200,
     top: 200,
   });
-  canvas.add(group);
-  canvas.setActiveObject(group);
-  window.text = group;
-  canvas.renderAll();
+  canvas.setActiveObject(text);
+  canvas.add(text);
+  canvas.requestRenderAll();
 }
 
-export function move() {
-  console.log("move");
-  (canvas.getActiveObject() as TextBox).setPosition(100, 200);
+export function update({ target }) {
+  canvas.getActiveObject()?.setText(target.value);
+  canvas.requestRenderAll();
 }
 
-export function change() {
-  console.log("change");
-  (canvas.getActiveObject() as TextBox).setFontFamily("ass");
-}
-
+let input = document.querySelector("#update");
 let btn_add = document.querySelector("#text");
-let btn_move = document.querySelector("#move");
-let btn_change = document.querySelector("#change");
 
+input?.addEventListener("input", update);
 btn_add?.addEventListener("click", addText);
-btn_move?.addEventListener("click", move);
-btn_change?.addEventListener("click", change);
+
+if (btn_add) {
+  btn_add.click();
+}
