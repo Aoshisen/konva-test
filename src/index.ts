@@ -1,6 +1,8 @@
 import { fabric } from "fabric";
 
+import FontFaceObserver from "fontfaceobserver";
 const canvas = new fabric.Canvas("canvas");
+window.canvas = canvas;
 
 canvas.setDimensions({
   width: 800,
@@ -43,8 +45,27 @@ export class TextBox extends fabric.Group {
     this.textNode.set("text", text);
   }
 
-  public setTextOptions(options) {
-    this.textNode.setOptions(options);
+  override _set(key: string, value: any) {
+    switch (key) {
+      case "text":
+        this.setText(value);
+        break;
+      case "fontFamily":
+        this.setFontFamily(value);
+        break;
+      case "charSpacing":
+        this.setCharSpacing(value);
+        break;
+      case "fill":
+        this.setFill(value);
+        break;
+      case "textAlign":
+        this.setTextAlign(value);
+        break;
+      default:
+        super._set(key, value);
+    }
+    return this;
   }
 
   public setText(text: string) {
@@ -62,6 +83,21 @@ export class TextBox extends fabric.Group {
       }
     }
   }
+
+  public setFontFamily(family: string) {
+    this.textNode.set("fontFamily", family);
+  }
+
+  public setCharSpacing(spacing: number) {
+    this.textNode.set("charSpacing", spacing);
+  }
+
+  public setFill(color: any) {
+    this.textNode.set("fill", color);
+  }
+  public setTextAlign(position: "left" | "center" | "right") {
+    this.textNode.set("textAlign", position);
+  }
 }
 
 export function addText() {
@@ -78,15 +114,50 @@ export function addText() {
 }
 
 export function update({ target }) {
-  canvas.getActiveObject()?.setText(target.value);
+  let activeObject = canvas.getActiveObject();
+
+  if (activeObject instanceof TextBox) {
+    activeObject.setText(target.value);
+  }
+
+  console.log("updateText", target);
+
   canvas.requestRenderAll();
 }
 
-let input = document.querySelector("#update");
-let btn_add = document.querySelector("#text");
+export function changeTextFont({ target }: any) {
+  const fontFamily=target.value
+  const activeObject = canvas.getActiveObject();
+
+  const styleEl = document.getElementById("custom-options-fonts");
+  if (styleEl) {
+    styleEl.innerHTML += `@import url("https://fonts.googleapis.com/css?family=Pacifico");`;
+  } else {
+    const styleEl = document.createElement("style");
+    styleEl.id = "custom-options-fonts";
+    styleEl.innerHTML = `@import url("https://fonts.googleapis.com/css?family=Pacifico");`;
+    document.head.appendChild(styleEl);
+  }
+
+  let fontObserver = new FontFaceObserver(fontFamily);
+
+  fontObserver.load().then((res) => {
+    console.log("res", res);
+
+    if (activeObject instanceof TextBox) {
+      activeObject.setFontFamily(fontFamily);
+      canvas.requestRenderAll();
+    }
+  });
+}
+
+let input = document.querySelector("#update") as HTMLInputElement;
+let btn_add = document.querySelector("#text") as HTMLButtonElement;
+let select = document.querySelector("#font_select") as HTMLSelectElement;
 
 input?.addEventListener("input", update);
 btn_add?.addEventListener("click", addText);
+select?.addEventListener("change", changeTextFont);
 
 if (btn_add) {
   btn_add.click();

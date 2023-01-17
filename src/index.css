@@ -2,7 +2,7 @@
   font-family: My Fonts;
   src: url("") format("ttf");
 } */
-@import url("https://fonts.googleapis.com/css?family=Pacifico|VT323|Quicksand|Inconsolata");
+/* @import url("https://fonts.googleapis.com/css?family=Pacifico|VT323|Quicksand|Inconsolata"); */
 
 body *{
   border: 2px solid #000;
