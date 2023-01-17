@@ -1,4 +1,5 @@
 import { fabric } from "fabric";
+import processFontUrl from "./processFontUrl";
 
 import FontFaceObserver from "fontfaceobserver";
 const canvas = new fabric.Canvas("canvas");
@@ -126,16 +127,17 @@ export function update({ target }) {
 }
 
 export function changeTextFont({ target }: any) {
-  const fontFamily=target.value
+  const fontFamily = target.value;
   const activeObject = canvas.getActiveObject();
 
   const styleEl = document.getElementById("custom-options-fonts");
   if (styleEl) {
-    styleEl.innerHTML += `@import url("https://fonts.googleapis.com/css?family=Pacifico");`;
+    styleEl.innerHTML += processFontUrl(fontFamily);
   } else {
     const styleEl = document.createElement("style");
     styleEl.id = "custom-options-fonts";
-    styleEl.innerHTML = `@import url("https://fonts.googleapis.com/css?family=Pacifico");`;
+    styleEl.innerHTML = processFontUrl(fontFamily);
+
     document.head.appendChild(styleEl);
   }
 
