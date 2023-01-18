@@ -19,31 +19,24 @@ export class TextBox extends fabric.Group {
   public textNode: fabric.Text;
   type = "TextBox";
   constructor(text: string, options?: fabric.IGroupOptions) {
-    const textNode = new fabric.Text(text, {
+    const textNode = new fabric.Textbox(text, {
       fill: "yellow",
-      hasControls: false,
-      hasBorders: false,
-      lockMovementX: true,
-      lockMovementY: true,
-      selectable: false,
+      textAlign: "center",
+      hasControls: true,
+      selectable: true,
     });
     super([textNode], options);
     this._text = text;
     this.textNode = textNode;
+
     this.textNode.setPositionByOrigin(
       new fabric.Point(-(this.width || 0) / 2, 0),
       "left",
       "center"
     );
-  }
 
-  get text() {
-    return this._text;
-  }
-
-  set text(text: string) {
-    this._text = text;
-    this.textNode.set("text", text);
+    this.textNode.set("width", this.width);
+    console.log("width", this.width);
   }
 
   override _set(key: string, value: any) {
@@ -69,12 +62,13 @@ export class TextBox extends fabric.Group {
     return this;
   }
 
+  //text content
   public setText(text: string) {
     this.textNode.set("text", text);
     const groupWidth = this.width;
     const textWidth = this.textNode.width;
     if (groupWidth && textWidth) {
-      if (groupWidth < textWidth) {
+      if (groupWidth <= textWidth) {
         this.textNode.setPositionByOrigin(
           new fabric.Point(-groupWidth / 2, 0),
           "left",
@@ -85,17 +79,22 @@ export class TextBox extends fabric.Group {
     }
   }
 
+  //fontFamily
   public setFontFamily(family: string) {
     this.textNode.set("fontFamily", family);
   }
 
+  //letterSpacing
   public setCharSpacing(spacing: number) {
     this.textNode.set("charSpacing", spacing);
   }
 
+  // color
   public setFill(color: any) {
     this.textNode.set("fill", color);
   }
+
+  // textAlign
   public setTextAlign(position: "left" | "center" | "right") {
     this.textNode.set("textAlign", position);
   }
@@ -121,8 +120,6 @@ export function update({ target }) {
     activeObject.setText(target.value);
   }
 
-  console.log("updateText", target);
-
   canvas.requestRenderAll();
 }
 
@@ -131,21 +128,21 @@ export function changeTextFont({ target }: any) {
   const activeObject = canvas.getActiveObject();
 
   const styleEl = document.getElementById("custom-options-fonts");
+
   if (styleEl) {
+    //已经有style 标签了
     styleEl.innerHTML += processFontUrl(fontFamily);
   } else {
+    //没有style 标签 新添加元素
     const styleEl = document.createElement("style");
     styleEl.id = "custom-options-fonts";
     styleEl.innerHTML = processFontUrl(fontFamily);
-
     document.head.appendChild(styleEl);
   }
 
   let fontObserver = new FontFaceObserver(fontFamily);
 
   fontObserver.load().then((res) => {
-    console.log("res", res);
-
     if (activeObject instanceof TextBox) {
       activeObject.setFontFamily(fontFamily);
       canvas.requestRenderAll();
@@ -153,13 +150,24 @@ export function changeTextFont({ target }: any) {
   });
 }
 
+export function changeTextAlign(position: "left" | "center" | "right") {
+  const activeObject = canvas.getActiveObject();
+  if (activeObject instanceof TextBox) {
+    console.log("ass");
+    activeObject.setTextAlign(position);
+  }
+  canvas.requestRenderAll()
+}
+
 let input = document.querySelector("#update") as HTMLInputElement;
 let btn_add = document.querySelector("#text") as HTMLButtonElement;
 let select = document.querySelector("#font_select") as HTMLSelectElement;
+let align = document.querySelector("#align") as HTMLButtonElement;
 
 input?.addEventListener("input", update);
 btn_add?.addEventListener("click", addText);
 select?.addEventListener("change", changeTextFont);
+align.addEventListener("click", () => changeTextAlign("left"));
 
 if (btn_add) {
   btn_add.click();
