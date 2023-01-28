@@ -142,6 +142,11 @@
   resolved "https://registry.yarnpkg.com/@types/fontfaceobserver/-/fontfaceobserver-2.1.0.tgz#9ec2eabadfcaaf8c68c5e1254d19f5a293d132b4"
   integrity sha512-Vqf183RAiFdIjUi4asKqogf2HIfLDnxn+dQo9GCpnsU5QrrsLMA2bkJU1dHRudQlizLybWD61Csd1zAgUQ3JKQ==
 
+"@types/opentype.js@^1.3.4":
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/@types/opentype.js/-/opentype.js-1.3.4.tgz#d9ef2e6ed3ba9d2b6822e38febb1834fb037641b"
+  integrity sha512-6fbXi67I07ugNM+FExwJnfuui2hD7hraD6nqjr3UnqsbBpxSkrtmO6tBubPdNAjqRT9TVkquVkNS9IkgTtq6/w==
+
 abab@^2.0.5, abab@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.6.tgz#41b80f2c871d19686216b82309231cfd3cb3d291"
@@ -707,6 +712,14 @@ once@^1.3.0, once@^1.3.1:
   dependencies:
     wrappy "1"
 
+opentype.js@^1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/opentype.js/-/opentype.js-1.3.4.tgz#1c0e72e46288473cc4a4c6a2dc60fd7fe6020d77"
+  integrity sha512-d2JE9RP/6uagpQAVtJoF0pJJA/fgai89Cc50Yp0EJHk+eLp6QQ7gBoblsnubRULNY132I0J1QKMJ+JTbMqz4sw==
+  dependencies:
+    string.prototype.codepointat "^0.2.1"
+    tiny-inflate "^1.0.3"
+
 optionator@^0.8.1:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/optionator/-/optionator-0.8.3.tgz#84fa1d036fe9d3c7e21d99884b601167ec8fb495"
@@ -877,6 +890,11 @@ source-map@~0.6.1:
     is-fullwidth-code-point "^3.0.0"
     strip-ansi "^6.0.1"
 
+string.prototype.codepointat@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/string.prototype.codepointat/-/string.prototype.codepointat-0.2.1.tgz#004ad44c8afc727527b108cd462b4d971cd469bc"
+  integrity sha512-2cBVCj6I4IOvEnjgO/hWqXjqBGsY+zwPmHl12Srk9IXSZ56Jwwmy+66XO5Iut/oQVR7t5ihYdLB0GMa4alEUcg==
+
 string_decoder@^1.1.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.3.0.tgz#42f114594a46cf1a8e30b0a84f56c78c3edac21e"
@@ -912,6 +930,11 @@ tar@^6.1.11:
     minizlib "^2.1.1"
     mkdirp "^1.0.3"
     yallist "^4.0.0"
+
+tiny-inflate@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/tiny-inflate/-/tiny-inflate-1.0.3.tgz#122715494913a1805166aaf7c93467933eea26c4"
+  integrity sha512-pkY1fj1cKHb2seWDy0B16HeWyczlJA9/WW3u3c4z/NiWDsO3DOU5D7nhTLE9CF0yXv/QZFY7sEJmj24dK+Rrqw==
 
 tough-cookie@^4.0.0:
   version "4.1.2"
