@@ -5,7 +5,7 @@ export default function processFontUrl(fontName: string, url?: string) {
   font-family: ${fontName};
   font-style: normal;
   font-weight: 400;
-  src: url("../static/test.ttf");
+  src: url("../static/Pacifico.ttf");
 }
  `;
 }
