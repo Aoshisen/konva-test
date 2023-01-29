@@ -3,6 +3,9 @@ import processFontUrl from "./processFontUrl";
 
 import FontFaceObserver from "fontfaceobserver";
 const canvas = new fabric.Canvas("canvas");
+
+import opentype from "opentype.js";
+import Font from "./font";
 window.canvas = canvas;
 
 canvas.setDimensions({
@@ -123,31 +126,68 @@ export function update({ target }) {
   canvas.requestRenderAll();
 }
 
+//通过fontfaceobserver 加载字体
+// export function changeTextFont({ target }: any) {
+//   const fontFamily = target.value;
+//   const activeObject = canvas.getActiveObject();
+
+//   const styleEl = document.getElementById("custom-options-fonts");
+
+//   if (styleEl) {
+//     //已经有style 标签了
+//     styleEl.innerHTML += processFontUrl(fontFamily);
+//   } else {
+//     //没有style 标签 新添加元素
+//     const styleEl = document.createElement("style");
+//     styleEl.id = "custom-options-fonts";
+//     styleEl.innerHTML = processFontUrl(fontFamily);
+//     document.head.appendChild(styleEl);
+//   }
+
+//   let fontObserver = new FontFaceObserver(fontFamily);
+
+//   fontObserver.load().then((res) => {
+//     if (activeObject instanceof TextBox) {
+//       activeObject.setFontFamily(fontFamily);
+//       canvas.requestRenderAll();
+//     }
+//   });
+// }
+
+//通过opentype.js 加载字体文件
+// export function changeTextFont({ target }: any) {
+//   const fontFamily = target.value;
+//   const activeObject = canvas.getActiveObject();
+//   opentype.load("../static/Pacifico.ttf", (error, font) => {
+//     console.log("fontLoaded", font);
+//     const objectText = activeObject.textNode;
+//     const path = font?.getPath(
+//       objectText.text || "",
+//       0,
+//       0,
+//       objectText.fontSize || 0
+//     );
+//     const fabricPath = new fabric.Path(path?.toPathData(3), {});
+//     console.log(fabricPath, fabricPath);
+//     canvas.remove(activeObject);
+//     canvas.insertAt(fabricPath, 0, false);
+//     canvas.renderAll();
+//   });
+// }
+
+//通过原生FontFace 对象加载字体
 export function changeTextFont({ target }: any) {
   const fontFamily = target.value;
   const activeObject = canvas.getActiveObject();
-
-  const styleEl = document.getElementById("custom-options-fonts");
-
-  if (styleEl) {
-    //已经有style 标签了
-    styleEl.innerHTML += processFontUrl(fontFamily);
-  } else {
-    //没有style 标签 新添加元素
-    const styleEl = document.createElement("style");
-    styleEl.id = "custom-options-fonts";
-    styleEl.innerHTML = processFontUrl(fontFamily);
-    document.head.appendChild(styleEl);
-  }
-
-  let fontObserver = new FontFaceObserver(fontFamily);
-
-  fontObserver.load().then((res) => {
-    if (activeObject instanceof TextBox) {
-      activeObject.setFontFamily(fontFamily);
+  if (activeObject instanceof TextBox) {
+    const font = new FontFace(fontFamily, "url(../static/Pacifico.ttf)");
+    font.load();
+    document.fonts.add(font);
+    activeObject.textNode.set("fontFamily", fontFamily);
+    document.fonts.ready.then(() => {
       canvas.requestRenderAll();
-    }
-  });
+    });
+  }
 }
 
 export function changeTextAlign(position: "left" | "center" | "right") {
@@ -156,7 +196,7 @@ export function changeTextAlign(position: "left" | "center" | "right") {
     console.log("ass");
     activeObject.setTextAlign(position);
   }
-  canvas.requestRenderAll()
+  canvas.requestRenderAll();
 }
 
 let input = document.querySelector("#update") as HTMLInputElement;
