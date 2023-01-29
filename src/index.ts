@@ -179,13 +179,41 @@ export function update({ target }) {
 export function changeTextFont({ target }: any) {
   const fontFamily = target.value;
   const activeObject = canvas.getActiveObject();
-  if (activeObject instanceof TextBox) {
-    const font = new FontFace(fontFamily, "url(../static/Pacifico.ttf)");
+
+  const changeActiveObjectFontFamily = (fontFamily: string) => {
+    if (activeObject instanceof TextBox) {
+      activeObject.textNode.set(
+        "fontFamily",
+        fontFamily === "Default" ? "Times New Roman" : fontFamily
+      );
+      document.fonts.ready.then(() => {
+        canvas.requestRenderAll();
+      });
+    }
+  };
+
+  const alreadyHaveFontFamily = (fontFamilyName: string) => {
+    let fonts = Array.from(document.fonts as any);
+
+    for (const font of fonts) {
+      if (font.family === fontFamilyName) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const font = new FontFace(fontFamily, "url(../static/Pacifico.ttf)");
+
+  if (alreadyHaveFontFamily(fontFamily)) {
+    console.log("alreadyHave font", font);
+    changeActiveObjectFontFamily(fontFamily);
+  } else {
+    console.log("newFont loading...", font);
     font.load();
     document.fonts.add(font);
-    activeObject.textNode.set("fontFamily", fontFamily);
     document.fonts.ready.then(() => {
-      canvas.requestRenderAll();
+      changeActiveObjectFontFamily(fontFamily);
     });
   }
 }
