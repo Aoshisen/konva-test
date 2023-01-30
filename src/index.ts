@@ -18,31 +18,34 @@ canvas.setBackgroundColor("#565656", () => {
 });
 
 export class TextBox extends fabric.Group {
-  public _text: string;
   public textNode: fabric.Text;
   type = "TextBox";
   constructor(text: string, options?: fabric.IGroupOptions) {
-    const textNode = new fabric.Textbox(text, {
-      fill: "yellow",
-      textAlign: "center",
-      hasControls: true,
-      selectable: true,
-    });
+    let textNode = new fabric.IText(text);
     super([textNode], options);
-    this._text = text;
     this.textNode = textNode;
 
-    this.textNode.setPositionByOrigin(
-      new fabric.Point(-(this.width || 0) / 2, 0),
-      "left",
-      "center"
-    );
+    //setWidth same with group with
+    // this.textNode.set("width", this.width);
+    //setPosition of textNode
+    //left
+    /* 
+    const point = new fabric.Point(-(this.width || 0) / 2, 0);
+    this.textNode.setPositionByOrigin(point, "left", "center");
+ */
+    //center
+    /*     const point = new fabric.Point(0, 0);
+    this.textNode.setPositionByOrigin(point, "center", "center"); */
 
-    this.textNode.set("width", this.width);
-    console.log("width", this.width);
+    //right
+    /* 
+    const point = new fabric.Point( (this.width || 0) / 2,0);
+    this.textNode.setPositionByOrigin(point, "right", "center");
+ */
   }
 
   override _set(key: string, value: any) {
+    console.log("override _set");
     switch (key) {
       case "text":
         this.setText(value);
@@ -70,13 +73,12 @@ export class TextBox extends fabric.Group {
     this.textNode.set("text", text);
     const groupWidth = this.width;
     const textWidth = this.textNode.width;
+
+    this.setTextAlign(this.textNode.textAlign as string)
     if (groupWidth && textWidth) {
-      if (groupWidth <= textWidth) {
-        this.textNode.setPositionByOrigin(
-          new fabric.Point(-groupWidth / 2, 0),
-          "left",
-          "center"
-        );
+      if (groupWidth < textWidth) {
+        //
+        console.log("group 小于 textWidth");
         this.textNode.scaleToWidth(groupWidth);
       }
     }
@@ -98,7 +100,26 @@ export class TextBox extends fabric.Group {
   }
 
   // textAlign
-  public setTextAlign(position: "left" | "center" | "right") {
+  public setTextAlign(position: "left" | "center" | "right"|string) {
+    let point;
+    switch (position) {
+      case "left":
+        point = new fabric.Point(-(this.width || 0) / 2, 0);
+        this.textNode.setPositionByOrigin(point, "left", "center");
+        break;
+
+      case "center":
+        point = new fabric.Point(0, 0);
+        this.textNode.setPositionByOrigin(point, "center", "center");
+        break;
+
+      case "right":
+        point = new fabric.Point((this.width || 0) / 2, 0);
+        this.textNode.setPositionByOrigin(point, "right", "center");
+        break;
+      default:
+        break;
+    }
     this.textNode.set("textAlign", position);
   }
 }
@@ -118,11 +139,9 @@ export function addText() {
 
 export function update({ target }) {
   let activeObject = canvas.getActiveObject();
-
   if (activeObject instanceof TextBox) {
     activeObject.setText(target.value);
   }
-
   canvas.requestRenderAll();
 }
 
@@ -180,7 +199,7 @@ export function changeTextFont({ target }: any) {
   const fontFamily = target.value;
   const activeObject = canvas.getActiveObject();
 
-  const changeActiveObjectFontFamily = (fontFamily: string) => {
+  function changeActiveObjectFontFamily(fontFamily: string) {
     if (activeObject instanceof TextBox) {
       activeObject.textNode.set(
         "fontFamily",
@@ -190,9 +209,9 @@ export function changeTextFont({ target }: any) {
         canvas.requestRenderAll();
       });
     }
-  };
+  }
 
-  const alreadyHaveFontFamily = (fontFamilyName: string) => {
+  function alreadyHaveFontFamily(fontFamilyName: string) {
     let fonts = Array.from(document.fonts as any);
 
     for (const font of fonts) {
@@ -201,14 +220,13 @@ export function changeTextFont({ target }: any) {
       }
     }
     return false;
-  };
-
-  const font = new FontFace(fontFamily, "url(../static/Pacifico.ttf)");
+  }
 
   if (alreadyHaveFontFamily(fontFamily)) {
-    console.log("alreadyHave font", font);
+    console.log("alreadyHave font", fontFamily);
     changeActiveObjectFontFamily(fontFamily);
   } else {
+    const font = new FontFace(fontFamily, "url(../static/Pacifico.ttf)");
     console.log("newFont loading...", font);
     font.load();
     document.fonts.add(font);
@@ -221,9 +239,9 @@ export function changeTextFont({ target }: any) {
 export function changeTextAlign(position: "left" | "center" | "right") {
   const activeObject = canvas.getActiveObject();
   if (activeObject instanceof TextBox) {
-    console.log("ass");
-    activeObject.setTextAlign(position);
+    activeObject.setTextAlign(position)
   }
+
   canvas.requestRenderAll();
 }
 
@@ -235,7 +253,7 @@ let align = document.querySelector("#align") as HTMLButtonElement;
 input?.addEventListener("input", update);
 btn_add?.addEventListener("click", addText);
 select?.addEventListener("change", changeTextFont);
-align.addEventListener("click", () => changeTextAlign("left"));
+align.addEventListener("click", () => changeTextAlign("right"));
 
 if (btn_add) {
   btn_add.click();
