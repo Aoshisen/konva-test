@@ -1,6 +1,8 @@
 import { fabric } from "fabric";
 import { TextBox } from "./TextBox";
 
+import { getSources, createSources, resourceType } from "./apis";
+
 const canvas = new fabric.Canvas("canvas", {
   width: 800,
   height: 800,
@@ -49,7 +51,7 @@ function changeTextFont({ target }: any) {
     let fonts = Array.from(document.fonts as any);
 
     for (const font of fonts) {
-      if (font.family === fontFamilyName) {
+      if ((font as any).family === fontFamilyName) {
         return true;
       }
     }
@@ -63,6 +65,7 @@ function changeTextFont({ target }: any) {
     const font = new FontFace(fontFamily, "url(../static/Pacifico.ttf)");
     console.log("newFont loading...", font);
     font.load();
+
     document.fonts.add(font);
     document.fonts.ready.then(() => {
       changeActiveObjectFontFamily(fontFamily);
@@ -97,12 +100,25 @@ function remove() {
   }
 }
 
+async function getData() {
+  let res = await getSources();
+  console.log("getData", res);
+}
+
+async function createData(data) {
+  let res = await createSources(data);
+  console.log("getData", res);
+}
+
 let input = document.querySelector("#update") as HTMLInputElement;
 let btn_add = document.querySelector("#text") as HTMLButtonElement;
 let select = document.querySelector("#font_select") as HTMLSelectElement;
 let align = document.querySelector("#align") as HTMLSelectElement;
 let color = document.querySelector("#color") as HTMLSelectElement;
 let btn_remove = document.querySelector("#remove") as HTMLSelectElement;
+let btn_getData = document.querySelector("#getData") as HTMLSelectElement;
+let btn_createData = document.querySelector("#createData") as HTMLSelectElement;
+let input_file = document.querySelector("#input_file") as HTMLInputElement;
 
 input?.addEventListener("input", changeText);
 btn_add?.addEventListener("click", addText);
@@ -110,6 +126,21 @@ select?.addEventListener("change", changeTextFont);
 align.addEventListener("change", changeTextAlign);
 color.addEventListener("change", changeColor);
 btn_remove.addEventListener("click", remove);
+
+btn_getData.addEventListener("click", getData);
+
+btn_createData.addEventListener("click", () => {
+  if (input_file.files?.length) {
+    let file = input_file.files[0];
+    let formData = new FormData();
+
+    formData.append("resource", file);
+    formData.append("type", resourceType.font);
+    formData.append("name", file.name);
+
+    createData(formData);
+  }
+});
 
 if (btn_add) {
   btn_add.click();

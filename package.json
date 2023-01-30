@@ -20,6 +20,7 @@
   "dependencies": {
     "fabric": "^5.3.0",
     "fontfaceobserver": "^2.3.0",
-    "konva": "^8.3.14"
+    "konva": "^8.3.14",
+    "umi-request": "^1.4.0"
   }
 }
