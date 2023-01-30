@@ -5,26 +5,41 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="./src/index.css" />
   </head>
   <body>
     <input id="update" type="text" value="ass"/>
     <br />
-    <button id="text">ADD TEXT</button>
-    <!-- <button id="move">move</button> -->
-    <!-- <button id="change">change</button> -->
+
+    <!-- font-change -->
     <select id="font_select">
       <option value="Default">Default</option>
       <option value="Pacifico">Pacifico</option>
     </select>
-    <button id="align">change Align</button>
-    <button id="rectangle">ADD RECTANGLE</button>
-    <button id="circle">ADD CIRCLE</button>
-    <button id="triangle">ADD TRIANGLE</button>
-    <button id="image">ADD IMAGE</button>
+
+    <!-- font-textAlign -->
+    <select id="align">
+      <option value="center">center</option>
+      <option value="left">left</option>
+      <option value="right">right</option>
+    </select>
+
+    <!-- font-color -->
+    <select id="color">
+      <option value="black">black</option>
+      <option value="blue">blue</option>
+      <option value="red">red</option>
+      <option value="yellow">yellow</option>
+    </select>
+
+
+    <!-- function button -->
+    <button id="text">ADD TEXT</button>
     <button id="remove">REMOVE</button>
-    <button id="textBox">textBox</button>
+
+    <!-- canvas -->
     <canvas id="canvas"></canvas>
+
+
   </body>
   <script src="./src/index.ts" type="module"></script>
 </html>
