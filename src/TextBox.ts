@@ -1,12 +1,32 @@
 import { fabric } from "fabric";
 
+interface IText {
+  text: string;
+  fontFamily: string;
+  textAlign: "center" | "left" | "right";
+  fontSize: number;
+  color: any;
+}
 export class TextBox extends fabric.Group {
   public textNode: fabric.Text;
   type = "TextBox";
-  constructor(text: string, options?: fabric.IGroupOptions) {
-    let textNode = new fabric.IText(text);
+  public text: string | undefined;
+  public fontSize: number | undefined;
+  public charSpacing: number | undefined;
+  public textAlign: string | undefined;
+  public fill: any;
+
+  constructor(text: string, options?: fabric.IGroupOptions & Partial<IText>) {
+    const textNode = new fabric.IText(text);
     super([textNode], options);
+
     this.textNode = textNode;
+    this.text = this.textNode.text;
+    this.fontSize = this.textNode.fontSize;
+    this.charSpacing = this.textNode.charSpacing;
+    this.textAlign = this.textNode.textAlign;
+    this.fill = this.textNode.fill;
+
     this.setTextAlign("center");
   }
 
@@ -27,10 +47,18 @@ export class TextBox extends fabric.Group {
       case "textAlign":
         this.setTextAlign(value);
         break;
+
+      case "fontSize":
+        this.setTextFontSize(value);
+        break;
       default:
         super._set(key, value);
     }
     return this;
+  }
+  setTextFontSize(value: any) {
+    this.setTextAlign(this.textNode.textAlign as string);
+    this.textNode.set("fontSize", value);
   }
 
   //text content
@@ -56,6 +84,7 @@ export class TextBox extends fabric.Group {
 
   //letterSpacing
   public setCharSpacing(spacing: number) {
+    this.setTextAlign(this.textNode.textAlign as string);
     this.textNode.set("charSpacing", spacing);
   }
 
