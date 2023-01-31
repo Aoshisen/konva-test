@@ -1,7 +1,7 @@
 import { fabric } from "fabric";
 import { TextBox } from "./TextBox";
 
-import { getSources, createSources, resourceType } from "./apis";
+import { getSources, createSources, ResourceType } from "./apis";
 
 const canvas = new fabric.Canvas("canvas", {
   width: 800,
@@ -134,8 +134,12 @@ btn_createData.addEventListener("click", () => {
     let file = input_file.files[0];
     let formData = new FormData();
 
+    //formData 类型的数据不能解构，解构了传递给接口请求的时候哦就不行了，所以我们需要从头构造 一个formData 类型的数据
+    //至于其他的接口需要的参数，就通过formData.append 到formData 对象上就行了
+    //类似下面的这种写法，我的接口要求我传递一个 resource 字段，里面带的是上传的文件，然后需要一个type类型，里面标识的是我们的资源的类型，然后如果是一个字符串类型的资源的话还需要传一个name字段，其他不需要传这个name
+
     formData.append("resource", file);
-    formData.append("type", resourceType.font);
+    formData.append("type", ResourceType.FONT);
     formData.append("name", file.name);
 
     createData(formData);

@@ -4,14 +4,13 @@ import request from "./main";
 export async function getSources() {
   return request("/api/resources");
 }
-export enum resourceType {
-  font = "1",
-  image = "2",
-  string = "3",
-
+export enum ResourceType {
+  FONT = "1",
+  IMAGE = "2",
+  STRING = "3",
 }
 // 当为string类型的时候需要传递进去name属性
-export async function createSources(data:FormData) {
+export async function createSources(data: FormData) {
   return request("/api/resources", {
     method: "POST",
     requestType: "form",
