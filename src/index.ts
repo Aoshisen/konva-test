@@ -31,15 +31,14 @@ function changeText({ target }: any) {
 }
 
 //通过原生FontFace 对象加载字体
-function changeTextFont({ target }: any) {
-  const fontFamily = target.value;
+function changeTextFont(fontName: string, fontUrl: string) {
   const activeObject = canvas.getActiveObject();
 
-  function changeActiveObjectFontFamily(fontFamily: string) {
+  function changeActiveObjectFontFamily(fontName: string) {
     if (activeObject instanceof TextBox) {
       activeObject.textNode.set(
         "fontFamily",
-        fontFamily === "Default" ? "Times New Roman" : fontFamily
+        fontName === "Default" ? "Times New Roman" : fontName
       );
       document.fonts.ready.then(() => {
         canvas.requestRenderAll();
@@ -58,17 +57,17 @@ function changeTextFont({ target }: any) {
     return false;
   }
 
-  if (alreadyHaveFontFamily(fontFamily)) {
-    console.log("alreadyHave font", fontFamily);
-    changeActiveObjectFontFamily(fontFamily);
+  if (alreadyHaveFontFamily(fontName)) {
+    console.log("alreadyHave font", fontName);
+    changeActiveObjectFontFamily(fontName);
   } else {
-    const font = new FontFace(fontFamily, "url(../static/Pacifico.ttf)");
+    const font = new FontFace(fontName, `url(${fontUrl})`);
     console.log("newFont loading...", font);
     font.load();
 
     document.fonts.add(font);
     document.fonts.ready.then(() => {
-      changeActiveObjectFontFamily(fontFamily);
+      changeActiveObjectFontFamily(fontName);
     });
   }
 }
@@ -105,7 +104,7 @@ async function getData() {
   console.log("getData", res);
 }
 
-async function createData(data) {
+async function createData(data: any) {
   let res = await createSources(data);
   console.log("getData", res);
 }
@@ -122,7 +121,9 @@ let input_file = document.querySelector("#input_file") as HTMLInputElement;
 
 input?.addEventListener("input", changeText);
 btn_add?.addEventListener("click", addText);
-select?.addEventListener("change", changeTextFont);
+select?.addEventListener("change", ({ target }) => {
+  changeTextFont(target?.value, "../static/Pacifico.ttf");
+});
 align.addEventListener("change", changeTextAlign);
 color.addEventListener("change", changeColor);
 btn_remove.addEventListener("click", remove);
