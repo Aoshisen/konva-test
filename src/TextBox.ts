@@ -114,6 +114,7 @@ export class TextBox extends fabric.Group {
       default:
         break;
     }
+    this.textAlign = position;
     this.textNode.set("textAlign", position);
   }
 }
