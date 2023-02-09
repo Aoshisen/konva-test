@@ -8,6 +8,7 @@ export enum ResourceType {
 
 type TMetaData = "current_page" | "per_page" | "total";
 
+type TResource = ResourceType.FONT;
 export interface IResource {
   id: number;
   shop_id?: number;

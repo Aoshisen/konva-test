@@ -3,6 +3,12 @@ import { TextBox } from "./TextBox";
 
 import { getSources, createSources, ResourceType } from "./apis";
 
+type HTMLElementEvent<T extends HTMLElement> = Event & {
+  target: T;
+  // probably you might want to add the currentTarget as well
+  currentTarget: T;
+};
+
 const canvas = new fabric.Canvas("canvas", {
   width: 800,
   height: 800,
@@ -46,22 +52,18 @@ function changeTextFont(fontName: string, fontUrl: string) {
     }
   }
 
-  function alreadyHaveFontFamily(fontFamilyName: string) {
-    let fonts = Array.from(document.fonts as any);
-
-    for (const font of fonts) {
-      if ((font as any).family === fontFamilyName) {
-        return true;
-      }
-    }
-    return false;
+  function isFontExit(fontName: string): boolean {
+    const globalFontList = Array.from(document.fonts);
+    return !!globalFontList.find((font) => font.family === fontName);
   }
 
-  if (alreadyHaveFontFamily(fontName)) {
+  if (isFontExit(fontName)) {
     console.log("alreadyHave font", fontName);
     changeActiveObjectFontFamily(fontName);
   } else {
     const font = new FontFace(fontName, `url(${fontUrl})`);
+    console.log("fontUrl", fontUrl);
+
     console.log("newFont loading...", font);
     font.load();
 
@@ -101,7 +103,7 @@ function remove() {
 
 async function getData() {
   let res = await getSources();
-  console.log("getData", res);
+  console.log("getData", res.data.resources[0].type);
 }
 
 async function createData(data: any) {
@@ -119,11 +121,21 @@ let btn_getData = document.querySelector("#getData") as HTMLSelectElement;
 let btn_createData = document.querySelector("#createData") as HTMLSelectElement;
 let input_file = document.querySelector("#input_file") as HTMLInputElement;
 
+let toJson = document.querySelector("#toJson") as HTMLInputElement;
+
+let fromJson = document.querySelector("#fromJson") as HTMLInputElement;
+
 input?.addEventListener("input", changeText);
 btn_add?.addEventListener("click", addText);
-select?.addEventListener("change", ({ target }) => {
-  changeTextFont(target?.value, "../static/Pacifico.ttf");
-});
+select?.addEventListener(
+  "change",
+  ({ target }: HTMLElementEvent<HTMLSelectElement>) => {
+    changeTextFont(
+      target.value,
+      "https://d3siozvpgk9n1w.cloudfront.net/font/1/Pacifico-1-1675321663.ttf"
+    );
+  }
+);
 align.addEventListener("change", changeTextAlign);
 color.addEventListener("change", changeColor);
 btn_remove.addEventListener("click", remove);
@@ -146,6 +158,24 @@ btn_createData.addEventListener("click", () => {
     createData(formData);
   }
 });
+
+
+let json
+toJson.addEventListener("click",() => { 
+  const activeObject=canvas.getActiveObject();
+   json=activeObject.toJSON()
+  // document.write(json)
+  console.log(json);
+  
+ })
+
+
+fromJson.addEventListener("click",() => { 
+  const activeObject=canvas.getActiveObject();
+  if(activeObject instanceof TextBox){
+    activeObject.textNode.drawObject(json)
+  }
+ })
 
 if (btn_add) {
   btn_add.click();

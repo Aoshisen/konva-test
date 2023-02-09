@@ -56,6 +56,7 @@ export class TextBox extends fabric.Group {
     }
     return this;
   }
+
   setTextFontSize(value: any) {
     this.setTextAlign(this.textNode.textAlign as string);
     this.textNode.set("fontSize", value);
