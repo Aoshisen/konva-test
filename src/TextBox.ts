@@ -28,8 +28,17 @@ export class TextBox extends fabric.Group {
     this.fill = this.textNode.fill;
 
     this.setTextAlign("center");
+    this._initListener();
   }
 
+  private _initListener() {
+    this.on("modified", (e) => {
+      if (e.transform?.action.indexOf("scale") !== -1) {
+        this.setScale(this.width || 0, this.height || 0, true);
+        this.setTextAlign(this.textAlign)
+      }
+    });
+  }
   override _set(key: string, value: any) {
     switch (key) {
       case "text":
@@ -57,9 +66,40 @@ export class TextBox extends fabric.Group {
     return this;
   }
 
+  setScale(width: number, height: number, flag: boolean) {
+    const realWidth = width * (this.scaleX ?? 1);
+    const realHeight = height * (this.scaleY ?? 1);
+
+    this.scaleX = 1;
+    this.scaleY = 1;
+    this.setWidth(realWidth);
+    this.setHeight(realHeight);
+    if (flag) {
+      console.log(this.getTextAlign());
+      this.setTextAlign(this.getTextAlign());
+    }
+  }
+
+  setWidth(width = 0) {
+    this.set("width", width);
+    this.textNode.set("width", width);
+    // this.set("maxWidth", width);
+  }
+  // getWidth() {
+  //   return this.width * this.scaleX;
+  // }
+  setHeight(height = 0) {
+    this.set("height", height);
+    this.textNode.set("height", height);
+    // this.item(0).set("maxHeight", height);
+  }
   setTextFontSize(value: any) {
     this.setTextAlign(this.textNode.textAlign as string);
     this.textNode.set("fontSize", value);
+  }
+
+  public getTextAlign() {
+    return this.textNode.textAlign;
   }
 
   //text content
