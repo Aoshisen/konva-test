@@ -9,6 +9,7 @@ interface IText {
 }
 export class TextBox extends fabric.Group {
   public textNode: fabric.Text;
+  public rectNode: fabric.Rect;
   type = "TextBox";
   public text: string | undefined;
   public fontSize: number | undefined;
@@ -18,9 +19,21 @@ export class TextBox extends fabric.Group {
 
   constructor(text: string, options?: fabric.IGroupOptions & Partial<IText>) {
     const textNode = new fabric.IText(text);
-    super([textNode], options);
+    const rectNode = new fabric.Rect({
+      strokeDashArray: options?.strokeDashArray || [2, 5],
+      originX: "center",
+      originY: "center",
+      stroke: options?.stroke || "#000000",
+      strokeWidth:
+        "undefined" !== typeof options?.strokeWidth ? options.strokeWidth : 1,
+      width: options?.width || 300,
+      height: options?.height || 300,
+      fill: "rgba(0, 0, 0, 0)",
+    });
 
+    super([rectNode, textNode], options);
     this.textNode = textNode;
+    this.rectNode = rectNode;
     this.text = this.textNode.text;
     this.fontSize = this.textNode.fontSize;
     this.charSpacing = this.textNode.charSpacing;
@@ -34,11 +47,26 @@ export class TextBox extends fabric.Group {
   private _initListener() {
     this.on("modified", (e) => {
       if (e.transform?.action.indexOf("scale") !== -1) {
-        this.setScale(this.width || 0, this.height || 0, true);
-        this.setTextAlign(this.textAlign)
+        this.resetScale();
+        this.resetTextAlign();
+        this.resetRect();
       }
     });
   }
+
+  private resetTextAlign() {
+    this.setTextAlign(this.textAlign);
+  }
+
+  private resetScale() {
+    this.setScale(this.width || 0, this.height || 0, true);
+  }
+
+  private resetRect() {
+    this.rectNode.set("width", this.width);
+    this.rectNode.set("height", this.height);
+  }
+
   override _set(key: string, value: any) {
     switch (key) {
       case "text":
@@ -66,7 +94,7 @@ export class TextBox extends fabric.Group {
     return this;
   }
 
-  setScale(width: number, height: number, flag: boolean) {
+  setScale(width: number, height: number) {
     const realWidth = width * (this.scaleX ?? 1);
     const realHeight = height * (this.scaleY ?? 1);
 
@@ -74,10 +102,8 @@ export class TextBox extends fabric.Group {
     this.scaleY = 1;
     this.setWidth(realWidth);
     this.setHeight(realHeight);
-    if (flag) {
-      console.log(this.getTextAlign());
-      this.setTextAlign(this.getTextAlign());
-    }
+
+    this.resetTextAlign();
   }
 
   setWidth(width = 0) {
@@ -111,8 +137,6 @@ export class TextBox extends fabric.Group {
     this.setTextAlign(this.textNode.textAlign as string);
     if (groupWidth && textWidth) {
       if (groupWidth < textWidth) {
-        //
-        console.log("group 小于 textWidth");
         this.textNode.scaleToWidth(groupWidth);
       }
     }
